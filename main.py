@@ -3,6 +3,7 @@ from PyQt5 import uic
 from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtWidgets import QApplication
 
+
 class MyWidget(QMainWindow):
     """ главное окно"""
 
@@ -18,6 +19,8 @@ class MyWidget(QMainWindow):
         self.field = [" ", " ", " ", " ", " ", " ", " ", " ", " "]
         self.count_btn = 0
 
+        # начало игры при нажатии старта
+        self.start_btn.clicked.connect(self.start_game)
 
         # todo оптимизировать активацию кнопок поля
 
@@ -48,55 +51,35 @@ class MyWidget(QMainWindow):
 
     def btn_realize(self, btn, cur_mot):
         """нажатие на кнопку"""
-        
-     
-        if self.count_btn == 0:
-            self.res_txt.setText(' ')
-
         if self.count_btn != 8:
             self.count_btn += 1
             self.x_turn = not self.x_turn
             if self.x_turn:
-                btn.setText('❌')
+                btn.setText('X')
             else:
-                btn.setText('⭕️')
+                btn.setText('O')
 
             # связь с хранением промежуточной таблицы
             self.current_motion = cur_mot
             if self.x_turn:
-                self.field[self.current_motion] = '❌'
+                self.field[self.current_motion] = 'X'
             else:
-                self.field[self.current_motion] = '⭕️'
-            if self.win_check(self.field, '❌'):
-                self.res_txt.setText('❌')
-                self.start_game()
-            elif self.win_check(self.field, '⭕️'):
-                self.res_txt.setText('⭕️')
-                self.start_game()
+                self.field[self.current_motion] = 'O'
+            if self.win_check(self.field, 'X'):
+                self.res_txt.setText('X')
+            elif self.win_check(self.field, 'O'):
+                self.res_txt.setText('O')
         else:
-            self.x_turn = not self.x_turn
-            self.current_motion = cur_mot
             if self.x_turn:
-                self.field[self.current_motion] = '❌'
+                btn.setText('O')
             else:
-                self.field[self.current_motion] = '⭕️'
-            if self.x_turn:
-                btn.setText('❌')
-            else:
-                btn.setText('⭕')
-            if self.win_check(self.field, '❌'):
-                self.res_txt.setText('❌')
-                self.start_game()
-            elif self.win_check(self.field, '⭕️'):
-                self.res_txt.setText('⭕️')
-                self.start_game()
-            else:
-                self.res_txt.setText('🙂Ничья🙃')
-                self.start_game()
+                btn.setText('X')
+            self.res_txt.setText('ничья')
 
     def start_game(self):
         """функция начала игры"""
 
+        self.res_txt.setText(' ')
         self.count_btn = 0
 
         # очистка поля внутри окна
